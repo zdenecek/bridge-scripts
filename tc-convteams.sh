@@ -1,7 +1,13 @@
 #!/bin/bash
 
+set -eo pipefail
+
 # URL of the JSON data
 json_url="$1"
+
+output_dir="output"
+
+mkdir -p "$output_dir"
 
 # Temporary file to store the JSON data
 temp_json=$(mktemp)
@@ -9,7 +15,7 @@ temp_json=$(mktemp)
 # Fetch JSON data using curl
 curl -s "$json_url" -o "$temp_json"
 
-echo "PID,TeamID,LastName,FirstName,Number,Club,Active,Email" > players.csv
+echo "PID,TeamID,LastName,FirstName,Number,Club,Active,Email" > "$output_dir/_players.csv"
 
 # Generate players.csv
 jq -r '
@@ -28,9 +34,9 @@ jq -r '
       ""
     ] | join(",")
   ) | .[]
-' "$temp_json" >> players.csv
+' "$temp_json" >> "$output_dir/_players.csv"
 
-echo "" > rankings.csv
+echo "" > "$output_dir/_rankings.csv"
 
 # Generate rankings.csv
 jq -r '
@@ -45,9 +51,9 @@ jq -r '
     .Result._pointsDecimal,
     1
   ] | join(",") 
-' "$temp_json" >> rankings.csv
+' "$temp_json" >> "$output_dir/_rankings.csv"
 
-echo "TeamID,TeamName,TeamShortName" > teams.csv
+echo "TeamID,TeamName,TeamShortName" > "$output_dir/_teams.csv"
 
 # Generate teams.csv
 jq -r '
@@ -57,11 +63,14 @@ jq -r '
     .Number,
     ._name
   ] | join(",")
-' "$temp_json" >> teams.csv
+' "$temp_json" >> "$output_dir/_teams.csv"
 
 
-iconv -f UTF-8 -t CP1250 rankings.csv -o rankings.csv
-iconv -f UTF-8 -t CP1250 teams.csv -o teams.csv
-iconv -f UTF-8 -t CP1250 players.csv -o players.csv
+iconv -f UTF-8 -t CP1250 "$output_dir/_rankings.csv"  >"$output_dir/rankings.csv"
+iconv -f UTF-8 -t CP1250 "$output_dir/_teams.csv"     >"$output_dir/teams.csv"
+iconv -f UTF-8 -t CP1250 "$output_dir/_players.csv"   >"$output_dir/players.csv"
 
+rm "$output_dir/_rankings.csv"
+rm "$output_dir/_teams.csv"
+rm "$output_dir/_players.csv"
 rm "$temp_json"

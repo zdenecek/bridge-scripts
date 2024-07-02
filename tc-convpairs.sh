@@ -1,5 +1,11 @@
 #!/bin/bash
 
+set -eo pipefail
+
+output_dir="output"
+
+mkdir -p "$output_dir"
+
 json_url="$1"
 
 usage() {
