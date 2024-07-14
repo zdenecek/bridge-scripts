@@ -1,9 +1,24 @@
 #!/bin/bash
 
+# Convert results from a Tournament Calculator presentation to three CSV files suitable for MatrikaCBS
+# Handles team tournaments.
+# https://tournamentcalculator.com
+# https://matrikacbs.cz
+
 set -eo pipefail
 
 # URL of the JSON data
 json_url="$1"
+# Check if the URL ends with 'results.json'
+if [[ "$json_url" =~ results\.json$ ]]; then
+  # If it ends with 'results.json', we do nothing
+  final_url="$json_url"
+else
+  # If it does not end with 'results.json', append '/results.json' ensuring no double slashes
+  # Remove any trailing slashes before appending
+  json_url="${json_url%/}"
+  final_url="$json_url/results.json"
+fi
 
 output_dir="output"
 

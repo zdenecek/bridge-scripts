@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Convert results from a Tournament Calculator presentation to a CSV suitable for MatrikaCBS
+# Handles pair tournaments.
+# https://tournamentcalculator.com
+# https://matrikacbs.cz
+
 set -eo pipefail
 
 output_dir="output"
@@ -7,6 +12,17 @@ output_dir="output"
 mkdir -p "$output_dir"
 
 json_url="$1"
+
+# Check if the URL ends with 'results.json'
+if [[ "$json_url" =~ results\.json$ ]]; then
+  # If it ends with 'results.json', we do nothing
+  final_url="$json_url"
+else
+  # If it does not end with 'results.json', append '/results.json' ensuring no double slashes
+  # Remove any trailing slashes before appending
+  json_url="${json_url%/}"
+  final_url="$json_url/results.json"
+fi
 
 usage() {
     echo "Usage: $0 url [-n|--noname]"
@@ -40,8 +56,6 @@ else
     ( .Participant._person1._pid.Number | if . > 10000 then "" else . end )  ,
     ( .Participant._person2._pid.Number | if . > 10000 then "" else . end  ) ] ) 
     | join(",")' 
-
-
 fi
 
 
