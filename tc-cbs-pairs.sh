@@ -7,10 +7,6 @@
 
 set -eo pipefail
 
-output_dir="output"
-
-mkdir -p "$output_dir"
-
 json_url="$1"
 
 # Check if the URL ends with 'results.json'
@@ -32,13 +28,13 @@ usage() {
 # Parse command-line options
 while [[ "$#" -gt 0 ]]; do
     case $1 in
-        -n|--noname) noname=1; shift ;;
+        -n|--noname) noname=1 ;;
         -h|--help) usage ;;
     esac
     shift
 done
-
 if [[ $noname -eq 1 ]]; then
+    
     jq_filter='.Results[] | ( [
      .Place, 
     ( ( .Result._pointsDecimal * 100) |  round / 100 ) ,

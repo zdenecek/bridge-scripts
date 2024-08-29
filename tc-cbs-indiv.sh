@@ -29,7 +29,7 @@ shift
 
 usage() {
     echo "Usage: $0 url [-n|--noname]"
-    exit 1
+    exit $1
 }
 # Parse command-line options
 while [[ "$#" -gt 0 ]]; do
@@ -39,11 +39,11 @@ while [[ "$#" -gt 0 ]]; do
             shift
             ;;
         -h|--help)
-            usage
+            usage 0
             ;;
         *)
             echo "Unknown option: $1"
-            usage
+            usage 1
             ;;
     esac
 done
