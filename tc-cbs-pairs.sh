@@ -55,4 +55,4 @@ else
 fi
 
 
-curl --silent $json_url | jq --raw-output "$jq_filter"
+curl --silent -k $final_url | jq --raw-output "$jq_filter"

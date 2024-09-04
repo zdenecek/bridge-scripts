@@ -60,7 +60,7 @@ foreach ($lines as $line) {
             'Pid' => $columns[0],
             'FirstName' => $columns[2],
             'LastName' => $columns[1],
-            'Rank' => '', // Empty
+            'Rank' => '1', // Empty
             'District' => '', // Empty
             'Info1' => '', // Empty
             'Info2' => '', // Empty
