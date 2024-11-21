@@ -36,7 +36,7 @@ done
 if [[ $noname -eq 1 ]]; then
     
     jq_filter='.Results[] | ( [
-     .Place, 
+     (.Place  )   , 
     ( ( .Result._pointsDecimal * 100) |  round / 100 ) ,
     "", 
     ( .Participant._person1._pid.Number | if . > 10000 then "" else . end )  ,
